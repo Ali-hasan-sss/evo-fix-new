@@ -1,0 +1,74 @@
+/* src\components\Hero\hero.css
+*/
+
+
+#home {
+    height: 1500px;
+}
+
+.img-container,
+.img-container2,
+.img-container3 {
+    /* background-image: url(/images/P01.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: fill;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1; */
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    object-fit: fill;
+
+}
+
+.img-container .p01,
+.img-container2 .p02,
+.img-container3 .p03{
+    width: 100%;
+    height: 100vh;
+}
+
+
+.img-container {z-index: 3;}
+.img-container2 {z-index: 2;}
+.img-container3{z-index: 1;}
+
+
+/* .img-container2 {
+    background-image: url(/images/P02.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+
+    background-image: linear-gradient(90deg, #ff0404, transparent);
+} */
+
+/* .img-container3 {
+    background-image: url(/images/P03.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    opacity: 0.5;
+} */
