@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  productionBrowserSourceMaps: false,
   images: {
-    domains: ["localhost"],
+    domains: ["res.cloudinary.com"],
     remotePatterns: [
       {
         protocol: "https",

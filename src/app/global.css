@@ -1,7 +1,10 @@
 /* src\app\global.css
 */
 
-
-body{
-  direction:"rtl"
+body {
+  direction: "rtl";
+}
+.bg-logo {
+  background-color: rgba(137, 122, 240, 0.118);
+  backdrop-filter: blur(50px);
 }

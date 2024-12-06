@@ -2,10 +2,12 @@
 
 // src\types\jwtPayload.ts
 export type JWTPayload = {
-  isLoggedIn?: boolean;
+  // isLoggedIn?: boolean;
   id: number;
   role: string;
   fullName: string;
+  name?: string;
+  isLoggedIn: boolean; // أضف هذه الخاصية
 };
 
 export type JWTPayloadVerify = {
@@ -13,4 +15,5 @@ export type JWTPayloadVerify = {
   id?: number;
   role?: string;
   fullName?: string;
+  name?: string;
 };

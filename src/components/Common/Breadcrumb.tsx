@@ -10,7 +10,7 @@ const Breadcrumb = ({
 }) => {
   return (
     <>
-      <section className="relative z-10 overflow-hidden  lg:pt-[150px]">
+      <section className="relative z-10 overflow-hidden  lg:pt-[15px]">
         <div className="container">
           <div className="-mx-4 flex flex-wrap items-center">
             <div className="w-full xs:mt-16 md:pt-20 lg:mt-0 px-4 md:w-8/12 lg:w-7/12">

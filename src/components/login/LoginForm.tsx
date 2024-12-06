@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { DOMAIN } from "@/utils/constants";
+import Cookies from "js-cookie";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -14,15 +15,29 @@ const LoginForm = () => {
 
   const loginSubmitHundler = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // التحقق من إدخال البريد الإلكتروني وكلمة المرور
     if (email === "") return toast.error("أدخل الأيميل من فضلك");
     if (password === "") return toast.error("أدخل كلمة المرور من فضلك");
 
     try {
-      await axios.post(`${DOMAIN}/api/users/login`, { email, password });
+      // إرسال الطلب لتسجيل الدخول
+      const response = await axios.post(`${DOMAIN}/api/users/login`, {
+        email,
+        password,
+      });
+
+      const { token, info } = response.data;
+      Cookies.set("token", token, { expires: 7 });
+
+      localStorage.setItem("userInfo", JSON.stringify(info));
+      localStorage.setItem("userToken", "true");
       router.replace("/");
       router.refresh();
     } catch (error: any) {
-      toast.error(error?.response?.data.message);
+      toast.error(
+        error?.response?.data.message || "حدث خطأ أثناء تسجيل الدخول",
+      );
     }
   };
   return (

@@ -1,13 +1,13 @@
 // src\components\UpdateProfile\index.tsx
-"use client"
+"use client";
 import { DOMAIN } from "@/utils/constants";
 import { verifyTokenForPage } from "@/utils/verifyToken";
 import axios from "axios";
 import { cookies } from "next/headers";
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import {User} from "@prisma/client"
+import { User } from "@/types/user";
 
- interface UserData {
+interface UserData {
   id: string;
   name: string;
   email: string;
@@ -24,8 +24,9 @@ interface FormData extends UserData {
   password: string;
 }
 
-
-const UpdateProfile: React.FC<UpdateProfileFormProps> = ({ initialUserData }) => {
+const UpdateProfile: React.FC<UpdateProfileFormProps> = ({
+  initialUserData,
+}) => {
   const [userData, setUserData] = useState<FormData>({
     ...initialUserData,
     password: "",
@@ -73,7 +74,10 @@ const UpdateProfile: React.FC<UpdateProfileFormProps> = ({ initialUserData }) =>
                 <div className="-mx-4 flex flex-wrap">
                   <div className="w-full px-4 md:w-1/2">
                     <div className="mb-8">
-                      <label htmlFor="name" className="mb-3 block text-sm font-medium text-dark dark:text-white">
+                      <label
+                        htmlFor="name"
+                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
+                      >
                         الاســـم
                       </label>
                       <input
@@ -88,7 +92,10 @@ const UpdateProfile: React.FC<UpdateProfileFormProps> = ({ initialUserData }) =>
                   </div>
                   <div className="w-full px-4 md:w-1/2">
                     <div className="mb-8">
-                      <label htmlFor="email" className="mb-3 block text-sm font-medium text-dark dark:text-white">
+                      <label
+                        htmlFor="email"
+                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
+                      >
                         البريد الإلكتروني
                       </label>
                       <input
@@ -103,7 +110,10 @@ const UpdateProfile: React.FC<UpdateProfileFormProps> = ({ initialUserData }) =>
                   </div>
                   <div className="w-full px-4 md:w-1/2">
                     <div className="mb-8">
-                      <label htmlFor="governorate" className="mb-3 block text-sm font-medium text-dark dark:text-white">
+                      <label
+                        htmlFor="governorate"
+                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
+                      >
                         المحافظة
                       </label>
                       <input
@@ -118,7 +128,10 @@ const UpdateProfile: React.FC<UpdateProfileFormProps> = ({ initialUserData }) =>
                   </div>
                   <div className="w-full px-4 md:w-1/2">
                     <div className="mb-8">
-                      <label htmlFor="phoneNo" className="mb-3 block text-sm font-medium text-dark dark:text-white">
+                      <label
+                        htmlFor="phoneNo"
+                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
+                      >
                         رقم الجوال
                       </label>
                       <input
@@ -133,7 +146,10 @@ const UpdateProfile: React.FC<UpdateProfileFormProps> = ({ initialUserData }) =>
                   </div>
                   <div className="w-full px-4 md:w-1/2">
                     <div className="mb-8">
-                      <label htmlFor="address" className="mb-3 block text-sm font-medium text-dark dark:text-white">
+                      <label
+                        htmlFor="address"
+                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
+                      >
                         العنوان
                       </label>
                       <input
@@ -148,7 +164,10 @@ const UpdateProfile: React.FC<UpdateProfileFormProps> = ({ initialUserData }) =>
                   </div>
                   <div className="w-full px-4 md:w-1/2">
                     <div className="mb-8">
-                      <label htmlFor="password" className="mb-3 block text-sm font-medium text-dark dark:text-white">
+                      <label
+                        htmlFor="password"
+                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
+                      >
                         كلمة المرور
                       </label>
                       <input
@@ -162,7 +181,10 @@ const UpdateProfile: React.FC<UpdateProfileFormProps> = ({ initialUserData }) =>
                     </div>
                   </div>
                   <div className="w-full px-4">
-                    <button type="submit" className="rounded-md bg-primary px-9 py-4 text-base font-medium text-white shadow-submit duration-300 hover:bg-primary/90 dark:shadow-submit-dark">
+                    <button
+                      type="submit"
+                      className="rounded-md bg-primary px-9 py-4 text-base font-medium text-white shadow-submit duration-300 hover:bg-primary/90 dark:shadow-submit-dark"
+                    >
                       تعديل
                     </button>
                   </div>
@@ -174,7 +196,6 @@ const UpdateProfile: React.FC<UpdateProfileFormProps> = ({ initialUserData }) =>
       </div>
     </section>
   );
-
 };
 
 export default UpdateProfile;

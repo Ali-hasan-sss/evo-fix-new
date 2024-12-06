@@ -1,17 +1,28 @@
 // src\app\layout.tsx
-"use client"
+"use client";
 import Footer from "@/components/Footer";
-import Header from "@/components/Header/Header";
+import Header from "@/components/Header";
 import ScrollToTop from "@/components/ScrollToTop";
 import localfont from "next/font/local";
-import { Inter } from "next/font/google";
+//import { Inter } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "node_modules/react-modal-video/css/modal-video.css";
 import "@/styles/index.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./global.css";
 
-const inter = Inter({ subsets: ["latin"] });
+//const inter = Inter({ subsets: ["latin"] });
+
+if (typeof window === "undefined") {
+  global.localStorage = {
+    getItem: () => null,
+    setItem: () => {},
+    removeItem: () => {},
+    clear: () => {},
+    length: 0,
+    key: () => null,
+  } as Storage;
+}
 
 const beIN = localfont({
   src: [
@@ -34,7 +45,7 @@ export default function RootLayout({
 
       <body className={`bg-[#FCFCFC]  dark:bg-black ${beIN.variable}`}>
         <Providers>
-        <Header />
+          <Header />
           <ToastContainer theme="colored" position="top-center" />
           <main>{children}</main>
           <Footer />
@@ -46,4 +57,3 @@ export default function RootLayout({
 }
 
 import { Providers } from "./providers";
-

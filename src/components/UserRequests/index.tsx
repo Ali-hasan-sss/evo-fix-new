@@ -9,7 +9,7 @@ import {
   TableRow,
   TableCell,
   ChipProps,
-  Chip,Pagination,
+  Chip,Pagination, Button,
 } from "@nextui-org/react";
 import axios from "axios";
 import { DOMAIN } from "@/utils/constants";
@@ -113,6 +113,7 @@ const UserRequests = () => {
         <TableColumn>حالة الطلب</TableColumn>
         <TableColumn>المصاريف</TableColumn>
         <TableColumn>المدفوعات</TableColumn>
+        <TableColumn>دفع الرسوم</TableColumn>
       </TableHeader>
       <TableBody items={items}>
         {items.map((req) => (
@@ -138,6 +139,9 @@ const UserRequests = () => {
             {/* <TableCell>{translateStatus(req.status)}</TableCell> */}
             <TableCell>{req.fee}</TableCell>
             <TableCell>{getTotalPayments(req.payments)}</TableCell>
+            <TableCell>
+              <Button onClick={()=> console.log(req.id)} variant="bordered" accessKey={req.id} >تحويل</Button>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -10,7 +10,6 @@ import {
 } from "@nextui-org/react";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import CheckOut from "../CheckOut";
-import { User } from "@prisma/client";
 import { governorates } from "../Signup/data";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -18,9 +17,7 @@ import { useRouter } from "next/navigation";
 import { DOMAIN } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import React from "react";
-
-
-
+import { User } from "@/types/user"; // أو المسار الصحيح
 
 const Order = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -52,11 +49,11 @@ const Order = () => {
 
   const onSelectionChange = (key: string) => {
     const selectedTechnicianID = parseInt(key, 10); // Convert the string key to number
-  setTechnicalID(selectedTechnicianID);  
+    setTechnicalID(selectedTechnicianID);
   };
-  
+
   const onInputChange = (value: string) => {
-    setGovernorate(value)
+    setGovernorate(value);
   };
 
   const requestMaintenanceSubmitHundler = async (e: React.FormEvent) => {
@@ -77,7 +74,7 @@ const Order = () => {
         technicalID,
         governorate,
       });
-      router.replace('/')
+      router.replace("/");
       router.refresh();
       toast.success("تم إرسال طلبك بنجاح");
     } catch (error: any) {
@@ -114,7 +111,9 @@ const Order = () => {
                         name="address"
                         type="text"
                         value={address}
-                        onChange={e => {setAddress(e.target.value)}}
+                        onChange={(e) => {
+                          setAddress(e.target.value);
+                        }}
                         placeholder="مثال: دمشق - برامكة / سانا / جادة الاقتصاد / محضر .../ طابق أول"
                         className="border-stroke w-full rounded-md border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
                       />
@@ -132,7 +131,9 @@ const Order = () => {
                         name="typeDevice"
                         type="text"
                         value={deviceType}
-                        onChange={e => {setDeviceType(e.target.value)}}
+                        onChange={(e) => {
+                          setDeviceType(e.target.value);
+                        }}
                         placeholder="مثال: شاشة LG"
                         className="border-stroke w-full rounded-md border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
                       />
@@ -150,7 +151,9 @@ const Order = () => {
                         name="phoneNO"
                         type="number"
                         value={phoneNO}
-                        onChange={e => {setPhoneNO(e.target.value)}}
+                        onChange={(e) => {
+                          setPhoneNO(e.target.value);
+                        }}
                         placeholder="مثال: 0999911111"
                         className="border-stroke w-full rounded-md border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
                       />
@@ -158,7 +161,7 @@ const Order = () => {
                   </div>
 
                   <div className=" w-full px-4 md:w-1/2">
-                    <div className=" w-full mb-8">
+                    <div className=" mb-8 w-full">
                       <label
                         htmlFor="governorate"
                         className="mb-3 block text-sm text-dark dark:text-white"
@@ -169,7 +172,6 @@ const Order = () => {
                         name="governorate"
                         value={governorate}
                         onInputChange={onInputChange}
-
                         label="اختر المحافظة"
                         className="border-stroke w-full rounded-xl border bg-[#f8f8f8]  text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
                       >
@@ -203,7 +205,7 @@ const Order = () => {
                             key={technician.id}
                             value={technician.id.toString()} // Use ID as value, converted to string
                           >
-                            {`${technician.fullName} | ${technician.governorate}`} 
+                            {`${technician.fullName} | ${technician.governorate}`}
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
@@ -221,7 +223,9 @@ const Order = () => {
                       <textarea
                         name="desc-problem"
                         value={descProblem}
-                        onChange={e => {setDescProblem(e.target.value)}}
+                        onChange={(e) => {
+                          setDescProblem(e.target.value);
+                        }}
                         rows={5}
                         placeholder="اكتب هنا ..."
                         className="border-stroke w-full resize-none rounded-md border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"

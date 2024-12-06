@@ -1,6 +1,4 @@
-// src\components\Header\Notifications.tsx
-
-import React, { useEffect, useState  } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dropdown,
   DropdownTrigger,
@@ -11,77 +9,86 @@ import {
 } from "@nextui-org/react";
 import axios from "axios";
 import { DOMAIN } from "@/utils/constants";
-import { Notification } from "@prisma/client";
+import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+export interface Notification {
+  id: string; // أو number حسب نوع البيانات
+  title: string;
+  content: string;
+  isRead: boolean;
+}
 
-const formatMessage = (message) => {
+const formatContent = (message: string) => {
+  if (!message || typeof message !== "string") {
+    return ""; // إعادة نص فارغ إذا كانت الرسالة غير صالحة
+  }
+
   const words = message.split(" ");
   let formattedMessage = "";
 
   for (let i = 0; i < words.length; i++) {
     formattedMessage += words[i] + " ";
     if ((i + 1) % 8 === 0) {
-      formattedMessage += "<br />"; // إضافة سطر جديد بعد كل 5 كلمات
+      formattedMessage += "<br />"; // إضافة سطر جديد بعد كل 8 كلمات
     }
   }
   return formattedMessage;
 };
 
 const Notifications = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [notification, setNotification] = useState<Notification[]>([]);
-  // const [unreadNotifications, setUnreadNotifications] = useState(notification.length > 0);
+  const [unreadNotifications, setUnreadNotifications] = useState(
+    notification.length > 0,
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showBadge, setShowBadge] = useState(true); 
-   // دالة لجعل الإشعارات مقروءة عبر API
-  //  const markNotificationsAsRead = async () => {
-  //   try {
-  //     const response = await axios.put(`${DOMAIN}/api/Notifications/read`); // استدعاء API لجعل الإشعارات مقروءة
-  //     if (response.status === 200) {
-  //       setUnreadNotifications(false); // إذا كان الطلب ناجحًا، حدد الإشعارات كمقروءة
-  //     }
-  //   } catch (error) {
-      
-  //   }
-  // };
+  const [showBadge, setShowBadge] = useState(true);
 
-    // عند فتح قائمة الإشعارات
-    const handleOpenNotifications = async () => {
-      setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown state
-      setShowBadge(false); 
-      // setUnreadNotifications(false); // جعل الشارة تختفي
-      // await markNotificationsAsRead(); // استدعاء دالة قراءة الإشعارات
-    router.refresh()
-    };
+  const markNotificationsAsRead = async () => {
+    try {
+      const response = await axios.put(`${DOMAIN}/api/Notifications/read`);
+      if (response.status === 200) {
+        setUnreadNotifications(false);
+      }
+    } catch (error) {}
+  };
 
+  const handleOpenNotifications = async () => {
+    setIsDropdownOpen(!isDropdownOpen);
+    setShowBadge(false);
+    setUnreadNotifications(false);
+    await markNotificationsAsRead();
+    router.refresh();
+  };
 
-
-  // Fetch the data when the component is mounted
   useEffect(() => {
     const userNotifications = async () => {
       try {
-        const response = await axios.get(
-          `${DOMAIN}/api/Notifications/userNotifications`,
-        );
-        setNotification(response.data); // Store the fetched technicians in state
+        const token = Cookies.get("token");
+
+        if (!token) {
+          toast.error("توكن المستخدم غير موجود!");
+          return;
+        }
+
+        const response = await axios.get(`${DOMAIN}/api/notifications`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setNotification(response.data);
       } catch (error) {
-        toast.error(
-          error?.response?.data?.message || "Error fetching technicians",
-        );
+        toast.error(error?.response?.data?.message || "خطأ في جلب الإشعارات");
       }
     };
 
     userNotifications();
   }, []);
-  
-
-  const iconClasses =
-    "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   return (
-    <Dropdown >
-    
+    <Dropdown>
       <DropdownTrigger>
         <Button onClick={handleOpenNotifications} className="bg-transparent">
           <svg
@@ -100,42 +107,51 @@ const Notifications = () => {
           </svg>
           {notification && showBadge && (
             <span
-              className="absolute  top-0 right-0 flex h-3 w-3 items-center justify-center rounded-full bg-red-600 text-white text-xs font-bold"
-              style={{ width: "10px", height: "10px", top: "5px", right: "28px" }}
-            >
-              {/* {notification.length} */}
-            </span>
+              className="absolute right-0 top-0 flex h-3 w-3 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white"
+              style={{
+                width: "10px",
+                height: "10px",
+                top: "5px",
+                right: "28px",
+              }}
+            />
           )}
         </Button>
       </DropdownTrigger>
       <DropdownMenu variant="faded" aria-label="Dropdown menu with description">
-      <DropdownSection title="الإشعارات">
-        {notification.length === 0 ? (
-          <DropdownItem className="text-center">
-            لا توجد إشعارات حالياً
-          </DropdownItem>
-        ) : (
-          notification.map((notifi) => {
-            return (
+        <DropdownSection title="الإشعارات">
+          {notification.length === 0 ? (
+            <DropdownItem className="text-center">
+              لا توجد إشعارات حالياً
+            </DropdownItem>
+          ) : (
+            notification.map((notifi) => (
               <DropdownItem
                 key={notifi.id}
                 className="break-words"
                 description={
                   <>
-                    <span dangerouslySetInnerHTML={{ __html: formatMessage(notifi.message) }} />
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: formatContent(notifi.content),
+                      }}
+                    />
                     <br />
-                    {/* <small>{formattedDate}</small> */}
-                    <hr className="my-4 text-gray-400"/>
+                    <hr className="my-4 text-gray-400" />
                   </>
                 }
-                >
-                {/* <div className="font-bold">{notifi.title}</div> */}
+              >
+                <div className="font-bold">
+                  {notifi.title}{" "}
+                  {!notifi.isRead && (
+                    <span className="ml-2 h-2 w-2 rounded-full bg-red-500"></span>
+                  )}
+                </div>
               </DropdownItem>
-            );
-          })
-        )}
-      </DropdownSection>
-    </DropdownMenu>
+            ))
+          )}
+        </DropdownSection>
+      </DropdownMenu>
     </Dropdown>
   );
 };

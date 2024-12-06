@@ -13,22 +13,16 @@ const Footer = () => {
               <div className="mb-12 max-w-[360px] lg:mb-16">
                 <Link href="/" className="mb-8 inline-block">
                   <Image
-                    src="/images/logo/logo-2.svg"
+                    src="/images/logo/logo-2.png"
                     alt="logo"
-                    className="w-full dark:hidden"
-                    width={140}
-                    height={30}
-                  />
-                  <Image
-                    src="/images/logo/logo.svg"
-                    alt="logo"
-                    className="hidden w-full dark:block"
-                    width={140}
-                    height={30}
+                    className="w-full "
+                    width={100}
+                    height={10}
                   />
                 </Link>
                 <p className="mb-9 text-base leading-relaxed text-body-color dark:text-body-color-dark">
-                  منصة EvoFix لخدمات الصيانة في جميع المحافظات السورية على مدار 24 ساعة
+                  منصة EvoFix لخدمات الصيانة في جميع المحافظات السورية على مدار
+                  24 ساعة
                 </p>
                 {/* <div className="flex items-center">
                   <a
@@ -120,7 +114,7 @@ const Footer = () => {
                       href="/blog"
                       className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
                     >
-                     الخدمات
+                      الخدمات
                     </Link>
                   </li>
                   <li>
@@ -215,8 +209,8 @@ const Footer = () => {
           <div className="h-px w-full bg-gradient-to-r from-transparent via-[#D2D8E183] to-transparent dark:via-[#959CB183]"></div>
           <div className="py-8">
             <p className="text-center text-base text-body-color dark:text-white">
-            Copyright © <span className="text-primary">Evolution Fix</span> by Mohammad Salman in 2024
-              
+              Copyright © <span className="text-primary">Evolution Fix</span>{" "}
+              by Mohammad Salman in 2024
             </p>
           </div>
         </div>

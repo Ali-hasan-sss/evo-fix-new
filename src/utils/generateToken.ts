@@ -2,6 +2,9 @@
 import Jwt from "jsonwebtoken";
 import { JWTPayload } from "@/types/jwtPayload";
 import { serialize } from "cookie";
+import Cookies from 'js-cookie';
+// import { setCookie } from 'cookies-next';
+
 
 // generate jwt token
 export function generateJWT(jwtPayload: JWTPayload): string {
@@ -11,7 +14,7 @@ export function generateJWT(jwtPayload: JWTPayload): string {
 }
 
 //set cookie with jwt
-export function setCookie(jwtPayload: JWTPayload): string {
+export function setTokenCookie(jwtPayload: JWTPayload): string {
   const token = generateJWT(jwtPayload);
   const cookie = serialize("jwtToken", token, {
     httpOnly: true, 
@@ -22,3 +25,15 @@ export function setCookie(jwtPayload: JWTPayload): string {
   });
   return cookie;
 }
+
+// export function setCookiejs(jwtPayload: JWTPayload): string {
+//   const token = generateJWT(jwtPayload);
+//   const cookie = setCookie('userToken', token, { 
+//   httpOnly: true, 
+//   secure: process.env.NODE_ENV === "production",
+//   sameSite: "strict", 
+//   path: "/",
+//   maxAge: 60 * 60 * 24 * 30, // 30 days
+// });
+//   return cookie;
+// }

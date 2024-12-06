@@ -34,6 +34,7 @@ const SignUpForm = () => {
 
     try {
       await axios.post(`${DOMAIN}/api/users/register`, { email, password,fullName,phoneNO,address,governorate });
+      localStorage.setItem("userToken","true")
       router.replace("/");
       router.refresh();
     } catch (error: any) {

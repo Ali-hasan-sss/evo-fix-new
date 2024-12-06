@@ -1,38 +1,63 @@
-// src\components\Header\Avatar.tsx
-
 import React, { useEffect, useState } from "react";
-import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar,User} from "@nextui-org/react";
-import Link from "next/link"
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Avatar,
+  User,
+} from "@nextui-org/react";
+import Link from "next/link";
 import { toast } from "react-toastify";
-import axios from "axios";
-import { DOMAIN } from "@/utils/constants";
 import { useRouter } from "next/navigation";
-
+import { JWTPayload } from "@/types/jwtPayload";
 
 export default function AvatarProfile() {
   const [userFullName, setUserFullName] = useState<string | null>(null);
-  const router = useRouter()
-  const logoutHandler = async ()=>{
+  const router = useRouter();
+
+  const logoutHandler = async () => {
     try {
-      await axios.get(`${DOMAIN}/api/users/logout`);
-      router.replace("/")
-      router.refresh()
+      localStorage.setItem("userToken", "false");
+      router.replace("/");
+      router.refresh();
     } catch (error: any) {
       toast.error(error?.response?.data.message);
     }
-  }
+  };
+
+  const getUserInfoFromLocalStorage = () => {
+    try {
+      // جلب معلومات المستخدم من الـ localStorage
+      const userInfoString = localStorage.getItem("userInfo");
+
+      if (!userInfoString) {
+        toast.error("لا توجد معلومات مستخدم مخزنة! الرجاء تسجيل الدخول أولاً.");
+        return null; // إعادة null إذا لم تكن المعلومات موجودة
+      }
+
+      // تحويل البيانات من نص إلى كائن JavaScript
+      const userInfo: JWTPayload = JSON.parse(userInfoString);
+
+      // التأكد من أن الكائن يحتوي على خاصية 'name'
+      if (userInfo && userInfo.name) {
+        setUserFullName(userInfo.name); // تعيين اسم المستخدم
+      }
+
+      console.log("معلومات المستخدم:", userInfo);
+
+      // إعادة معلومات المستخدم
+      return userInfo;
+    } catch (error) {
+      toast.error("حدث خطأ أثناء استخراج معلومات المستخدم من الـ localStorage");
+      return null;
+    }
+  };
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
-      const response = (await axios.get(`${DOMAIN}/api/VerifyLogin`)).data;
-      setUserFullName(response.name);
-    };
-
-    checkLoginStatus();
-  }, []);
-
-
-
+    // استدعاء دالة جلب البيانات من الـ localStorage عند تحميل المكون
+    getUserInfoFromLocalStorage();
+  }, []); // سيعمل هذا عند أول تحميل للمكون فقط
 
   return (
     <div className={`flex items-center gap-4`}>
@@ -47,25 +72,19 @@ export default function AvatarProfile() {
         </DropdownTrigger>
         <DropdownMenu aria-label="Profile Actions" variant="flat">
           <DropdownItem key="profile" className="h-14 gap-2">
-            {/* <p className="font-semibold">Signed in as</p> */}
-            {/* <p className="font-semibold">mohammad salman</p> */}
-            <Link className="font-semibold" href={"/profile"}>{userFullName}</Link> 
+            <Link className="font-semibold" href={"/profile"}>
+              {userFullName || "الاسم غير متاح"}{" "}
+              {/* إظهار "الاسم غير متاح" إذا لم يتم تحميل الاسم */}
+            </Link>
           </DropdownItem>
-          {/* <DropdownItem key="user-account">
-            <Link href={"/profile"}>حسابي</Link> 
-          </DropdownItem> */}
-          <DropdownItem key="user-order">طلباتي</DropdownItem>
-          <DropdownItem key="dashboard">
-            لوحة التحكم
+          <DropdownItem
+            key="user-order"
+            onClick={() => router.push("/user-order")}
+          >
+            طلباتي
           </DropdownItem>
-          <DropdownItem key="reset-password">
-            تغيير كلمة المرور
-          </DropdownItem>
-          {/* <DropdownItem key="system">System</DropdownItem>
-          <DropdownItem key="configurations">Configurations</DropdownItem>
-          <DropdownItem key="help_and_feedback">
-            Help & Feedback
-          </DropdownItem> */}
+          <DropdownItem key="dashboard">لوحة التحكم</DropdownItem>
+          <DropdownItem key="reset-password">تغيير كلمة المرور</DropdownItem>
           <DropdownItem key="logout" color="danger" onClick={logoutHandler}>
             تسجيل الخروج
           </DropdownItem>

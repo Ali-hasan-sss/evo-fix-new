@@ -1,5 +1,3 @@
-// src\app\profile\page.tsx
-
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import { Metadata } from "next";
 import UserRequests from "@/components/UserRequests";
@@ -7,6 +5,7 @@ import UpdateProfile from "@/components/UpdateProfile";
 import TechRequests from "@/components/TechRequest";
 import { cookies } from "next/headers";
 import { verifyTokenForPage } from "@/utils/verifyToken";
+import Status from "@/components/Status";
 
 export const metadata: Metadata = {
   title: "Next.js Profile | TailAdmin - Next.js Dashboard Template",
@@ -15,14 +14,26 @@ export const metadata: Metadata = {
 };
 
 const Profile = () => {
-  const token = cookies().get("jwtToken")?.value || "";
+  const token = cookies().get("token")?.value || "";
   const payload = verifyTokenForPage(token);
 
-  return (
-    <div className=" max-w-242.5 mx-auto">
-      <Breadcrumb pageName={payload.fullName} description="الصفحة الشخصية" />
+  if (!payload) {
+    // يمكن عرض رسالة خطأ أو توجيه المستخدم إلى صفحة تسجيل الدخول
+    return <div>خطأ في تحميل بيانات المستخدم. يرجى تسجيل الدخول مجددًا.</div>;
+  }
 
-      <div className=" container relative overflow-hidden rounded-sm bg-white pb-16 pt-[120px] dark:bg-bg-color-dark md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[200px] 2xl:pt-[210px]">
+  return (
+    <div className="max-w-242.5 mx-auto">
+      <Breadcrumb
+        pageName={payload.fullName || "الاسم غير متاح"}
+        description="الصفحة الشخصية"
+      />
+
+      <div>
+        <Status />
+      </div>
+
+      <div className="container relative overflow-hidden rounded-sm bg-white pb-16 pt-[120px] dark:bg-bg-color-dark md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[200px] 2xl:pt-[210px]">
         {payload.role === "TECHNICAL" ? (
           <>
             <div>
@@ -43,7 +54,6 @@ const Profile = () => {
           <h1 className="mt-8 flex justify-center text-3xl">
             المعلومات الشخصية
           </h1>
-          <UpdateProfile />
         </div>
       </div>
     </div>
