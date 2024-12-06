@@ -9,26 +9,30 @@ import {
   TableRow,
   TableCell,
   ChipProps,
-  Chip,Pagination, Button,
+  Chip,
+  Pagination,
+  Button,
 } from "@nextui-org/react";
 import axios from "axios";
 import { DOMAIN } from "@/utils/constants";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 // Define the status translation mapping
 const statusTranslation = {
-  APPROVED: "موافق عليه",
+  ASSIGNED: "موافق عليه",
   PENDING: "قيد الانتظار",
   REJECTED: "مرفوض",
-  UNDERPROCESSING: "قيد المعالجة",
-  DONE: "منجز"
+  IN_BROGRESS: "قيد المعالجة",
+  COMPLETED: "منجز",
 };
 
-const statusColorMap: Record<string, ChipProps["color"]>  = {
-  DONE: "success",
+const statusColorMap: Record<string, ChipProps["color"]> = {
+  COMPLETED: "success",
   REJECTED: "danger",
   PENDING: "warning",
-  APPROVED: "primary",
+  ASSIGNED: "primary",
+  IN_BROGRESS: "primary",
 };
 
 // Helper function to translate status
@@ -44,11 +48,14 @@ interface RequestData {
   status: keyof typeof statusTranslation;
   technician: { fullName: string };
   deviceType: string;
-  descProblem: string;
-  fee: number;
+  problemDescription: string;
+  cost: number;
   payments: { amount: number }[];
+  user: {
+    fullName: string;
+    phoneNO: string;
+  };
 }
-
 
 const UserRequests = () => {
   const [requests, setRequests] = useState<RequestData[]>([]);
@@ -67,7 +74,16 @@ const UserRequests = () => {
   useEffect(() => {
     const fetchUserRequests = async () => {
       try {
-        const response = await axios.get(`${DOMAIN}/api/users/userRequests`);
+        const token = Cookies.get("token");
+        const response = await axios.get(
+          `${DOMAIN}/api/maintenance-requests/all/user`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          },
+        );
         setRequests(response.data);
       } catch (error) {
         toast.error(
@@ -79,36 +95,36 @@ const UserRequests = () => {
     fetchUserRequests();
   }, []);
 
-  const getTotalPayments = (payments: { amount: number }[]) => {
-    return payments.reduce((sum, payment) => sum + payment.amount, 0);
+  const getTotalPayments = (payments: { amount: number }[] = []) => {
+    return payments?.length
+      ? payments.reduce((sum, payment) => sum + payment.amount, 0)
+      : 0;
   };
 
   return (
-    <Table 
-    aria-label="Example table with client side pagination"
-    bottomContent={
-      <div className="flex w-full justify-center">
-        <Pagination
-          // isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={(page) => setPage(page)}
-        />
-      </div>
-    }
-    classNames={{
-      wrapper: "min-h-[222px]",
-    }}
-  >
+    <Table
+      aria-label="Example table with client side pagination"
+      bottomContent={
+        <div className="flex w-full justify-center">
+          <Pagination
+            // isCompact
+            showControls
+            showShadow
+            color="primary"
+            page={page}
+            total={pages}
+            onChange={(page) => setPage(page)}
+          />
+        </div>
+      }
+      classNames={{
+        wrapper: "min-h-[222px]",
+      }}
+    >
       <TableHeader>
-        <TableColumn>التقني</TableColumn>
         <TableColumn>المحافظة</TableColumn>
         <TableColumn>نوع الجهاز</TableColumn>
         <TableColumn>رقم الجوال</TableColumn>
-        <TableColumn>العنوان</TableColumn>
         <TableColumn>وصف المشكلة</TableColumn>
         <TableColumn>حالة الطلب</TableColumn>
         <TableColumn>المصاريف</TableColumn>
@@ -118,12 +134,10 @@ const UserRequests = () => {
       <TableBody items={items}>
         {items.map((req) => (
           <TableRow key={req.id}>
-            <TableCell>{req.technician.fullName}</TableCell>
             <TableCell>{req.governorate}</TableCell>
             <TableCell>{req.deviceType}</TableCell>
-            <TableCell>{req.phoneNO}</TableCell>
-            <TableCell>{req.address}</TableCell>
-            <TableCell>{req.descProblem}</TableCell>
+            <TableCell>{req.user.phoneNO}</TableCell>
+            <TableCell>{req.problemDescription}</TableCell>
 
             <TableCell>
               <Chip
@@ -137,10 +151,16 @@ const UserRequests = () => {
             </TableCell>
 
             {/* <TableCell>{translateStatus(req.status)}</TableCell> */}
-            <TableCell>{req.fee}</TableCell>
+            <TableCell>{req.cost}</TableCell>
             <TableCell>{getTotalPayments(req.payments)}</TableCell>
             <TableCell>
-              <Button onClick={()=> console.log(req.id)} variant="bordered" accessKey={req.id} >تحويل</Button>
+              <Button
+                onClick={() => console.log(req.id)}
+                variant="bordered"
+                accessKey={req.id}
+              >
+                تحويل
+              </Button>
             </TableCell>
           </TableRow>
         ))}

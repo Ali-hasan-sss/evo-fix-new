@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const SignupPage = () => {
   "use client";
-  return <SignUp/>
+  return <SignUp />;
 };
 
 export default SignupPage;

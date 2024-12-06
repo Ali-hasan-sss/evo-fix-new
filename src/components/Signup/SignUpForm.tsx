@@ -1,16 +1,16 @@
 // src\components\Signup\SignUpForm.tsx
 "use client";
 import Link from "next/link";
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { governorates } from "./data";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { DOMAIN } from "@/utils/constants";
+import Cookies from "js-cookie";
 
 const SignUpForm = () => {
-
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
@@ -19,9 +19,8 @@ const SignUpForm = () => {
   const [address, setAddress] = useState("");
   const [governorate, setGovernorate] = useState("");
 
-  
   const onInputChange = (value) => {
-    setGovernorate(value)    
+    setGovernorate(value);
   };
   const signUpSubmitHundler = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,8 +32,19 @@ const SignUpForm = () => {
     if (governorate === "") return toast.error("هناك حقل فارغ");
 
     try {
-      await axios.post(`${DOMAIN}/api/users/register`, { email, password,fullName,phoneNO,address,governorate });
-      localStorage.setItem("userToken","true")
+      const response = await axios.post(`${DOMAIN}/api/users`, {
+        email,
+        password,
+        fullName,
+        phoneNO,
+        address,
+        governorate,
+      });
+      const { token, ...userInfo } = response.data;
+      Cookies.set("token", token, { expires: 7 });
+
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      localStorage.setItem("userToken", "true");
       router.replace("/");
       router.refresh();
     } catch (error: any) {
@@ -192,7 +202,6 @@ const SignUpForm = () => {
             name="governorate"
             value={governorate}
             onInputChange={onInputChange}
-            
             label="اختر المحافظة"
             className="border-stroke w-full rounded-xl border bg-[#f8f8f8]  text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
           >

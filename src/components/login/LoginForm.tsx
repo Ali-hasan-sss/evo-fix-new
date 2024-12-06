@@ -29,9 +29,10 @@ const LoginForm = () => {
 
       const { token, info } = response.data;
       Cookies.set("token", token, { expires: 7 });
-
+      const userId = response.data.info.id;
       localStorage.setItem("userInfo", JSON.stringify(info));
       localStorage.setItem("userToken", "true");
+      localStorage.setItem("userId", userId);
       router.replace("/");
       router.refresh();
     } catch (error: any) {

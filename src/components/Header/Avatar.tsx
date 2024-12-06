@@ -19,6 +19,8 @@ export default function AvatarProfile() {
   const logoutHandler = async () => {
     try {
       localStorage.setItem("userToken", "false");
+      localStorage.removeItem("userInfo");
+      localStorage.removeItem("repairRequests");
       router.replace("/");
       router.refresh();
     } catch (error: any) {
@@ -40,8 +42,8 @@ export default function AvatarProfile() {
       const userInfo: JWTPayload = JSON.parse(userInfoString);
 
       // التأكد من أن الكائن يحتوي على خاصية 'name'
-      if (userInfo && userInfo.name) {
-        setUserFullName(userInfo.name); // تعيين اسم المستخدم
+      if (userInfo) {
+        setUserFullName(userInfo.name || userInfo.fullName); // تعيين الاسم المتاح
       }
 
       console.log("معلومات المستخدم:", userInfo);
@@ -55,9 +57,10 @@ export default function AvatarProfile() {
   };
 
   useEffect(() => {
-    // استدعاء دالة جلب البيانات من الـ localStorage عند تحميل المكون
-    getUserInfoFromLocalStorage();
-  }, []); // سيعمل هذا عند أول تحميل للمكون فقط
+    if (typeof window !== "undefined") {
+      getUserInfoFromLocalStorage();
+    }
+  }, []);
 
   return (
     <div className={`flex items-center gap-4`}>
